@@ -1,0 +1,42 @@
+<launch>
+
+  <arg name="model" default="$(find xacro)/xacro --inorder '$(find followbot_mechanum)/urdf/followbot.urdf.xacro'" />
+  <param name="robot_description" command="$(arg model)" />
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <include file="$(find followbot_mechanum)/launch/followbot_amcl.launch"/>
+
+  <!-- Arguments -->
+  <arg name="person_name" default="taeyang"/>
+  <arg name="open_rviz" default="true"/>
+
+  <!-- leg detection part start -->
+  <!-- params -->
+  <param name="forest_file" value="$(find leg_tracker)/config/trained_leg_detector_res=0.33.yaml" />
+  <param name="scan_topic" value="/scan" />
+  <param name="fixed_frame" value="odom"/>
+  <param name="scan_frequency" value="10"/>
+
+  <!-- run detect_leg_clusters -->
+  <!-- effective limit distance is 0.8m for detecting human legs with turtlbot's standard lidar -->
+  <node pkg="leg_tracker" type="detect_leg_clusters" name="detect_leg_clusters"/>
+
+  <!-- run joint_leg_tracker -->
+  <node pkg="leg_tracker" type="joint_leg_tracker.py" name="joint_leg_tracker"/>
+
+  <!-- run local_occupancy_grid_mapping -->
+  <node pkg="leg_tracker" type="local_occupancy_grid_mapping" name="local_occupancy_grid_mapping"/>
+  <!-- leg detection part end -->
+
+  <group if="$(arg open_rviz)">
+    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find followbot_mechanum)/rviz/followbot_mechanum.rviz"/>
+  </group>
+
+  <!--include file="$(find openpose_ros)/launch/openpose_ros.launch"/-->
+
+  <!--<node pkg="followbot_mechanum" type="clothes_pattern_2.py" name="clothes_pattern"/>
+  <node pkg="followbot_mechanum" type="face_recog.py" name="face_recog"/>-->
+
+</launch>

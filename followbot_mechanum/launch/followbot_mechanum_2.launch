@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<launch>
+
+  <!-- Arguments -->
+  <arg name="person_name" default="taeyang"/>
+  <arg name="open_rviz" default="true"/>
+  <!--<arg name="map_file" default="$(find followbot_turtle)/maps/map.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" required="true"/>-->
+
+  <!-- leg detection part start -->
+  <!-- params -->
+  <param name="forest_file" value="$(find leg_tracker)/config/trained_leg_detector_res=0.33.yaml" />
+  <param name="scan_topic" value="/scan" />
+  <param name="fixed_frame" value="map"/>
+  <param name="scan_frequency" value="10"/>
+
+  <!-- run detect_leg_clusters -->
+  <node pkg="leg_tracker" type="detect_leg_clusters" name="detect_leg_clusters"/>
+
+  <!-- run joint_leg_tracker -->
+  <node pkg="leg_tracker" type="joint_leg_tracker.py" name="joint_leg_tracker"/>
+
+  <!-- run local_occupancy_grid_mapping -->
+  <node pkg="leg_tracker" type="local_occupancy_grid_mapping" name="local_occupancy_grid_mapping"/>
+  <!-- leg detection part end -->
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)">
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find followbot_turtle)/rviz/followbot_mechanum.rviz"/>
+  </group>
+
+  <include file="$(find openpose_ros)/launch/openpose_ros.launch"/>
+
+</launch>
