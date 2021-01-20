@@ -1,0 +1,31 @@
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find pnu_tb3_launch)/urdf/turtlebot_armed_granny.urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+  <arg name="rviz_file" value="$(find pnu_tb3_launch)/config/tb3_minimal.rviz"/>
+
+  <!-- Robot state publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!--rviz  -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_file)" required="true"/>
+
+  <!-- AR tracking -->
+  <include file="$(find ar_track_alvar)/launch/pr2_indiv_no_kinect.launch">
+    <!-- <arg name="depth_mode" value="WFOV_2X2BINNED"/> -->
+    <arg name="marker_size" value="8"/>
+    <arg name="max_new_marker_error" value="0.08"/>
+    <arg name="max_track_error" value="0.2"/>
+    <arg name="cam_image_topic" value="/image_raw"/>
+    <arg name="cam_info_topic" value="/camera_info"/>
+    <arg name="output_frame" value="head_rgbd_sensor_rgb_frame_sync"/>
+  </include>
+
+  <!-- Hector slam -->
+  <include file="$(find hector_mapping)/launch/mapping_default.launch">
+    <!-- <arg name="base_frame" value="odom"/> -->
+    <arg name="base_frame" value="base_footprint"/>
+    <arg name="odom_frame" value="odom"/>
+<!--    <arg name="pub_map_odom_transform" value="false"/> -->
+  </include>
+</launch>

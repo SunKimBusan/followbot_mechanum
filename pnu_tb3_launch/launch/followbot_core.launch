@@ -1,0 +1,17 @@
+<launch>
+
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find pnu_tb3_launch)/urdf/followbot.urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <!-- openCR interface -->
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch"/> 
+
+  <!-- Camera -->
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch"/>
+
+  <!-- S1 PRLIDAR -->
+  <include file="$(find rplidar_ros)/launch/rplidar_s1.launch"/>
+
+</launch>

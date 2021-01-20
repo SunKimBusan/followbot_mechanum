@@ -1,0 +1,18 @@
+<launch>
+  <arg name="gui" default="true"/>
+   <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find pnu_tb3_launch)/urdf/turtlebot_armed_granny.urdf.xacro'" />
+   <param name="robot_description" command="$(arg urdf_file)" />
+   <arg name="rviz_file" value="$(find pnu_tb3_launch)/config/tb3_minimal.rviz"/>
+   <!--rviz  -->
+   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_file)" required="true"/>
+
+  <!--xbox 360 wizard  -->
+  <node name="xbox_wizard" pkg="aliencontrol" type="aliencontrol">
+     <param name="cmd" value="cd /home/sj/Desktop/TurtleBotPNU/Run; ./xb360_wizard.lua granny"/>
+  </node>
+
+  <!--voice wizard  -->
+  <node name="voice_wizard" pkg="aliencontrol" type="aliencontrol">
+     <param name="cmd" value="cd /home/sj/Desktop/TurtleBotPNU/Run; ./voice_wizard.lua"/>
+  </node>
+</launch>

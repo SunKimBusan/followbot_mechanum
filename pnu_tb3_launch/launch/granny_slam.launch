@@ -1,0 +1,9 @@
+<launch>
+  <!-- Hector slam -->
+  <include file="$(find hector_mapping)/launch/mapping_default.launch">
+    <!-- <arg name="base_frame" value="odom"/> -->
+    <arg name="base_frame" value="base_footprint"/>
+    <arg name="odom_frame" value="odom"/>
+<!--    <arg name="pub_map_odom_transform" value="false"/> -->
+  </include>
+</launch>

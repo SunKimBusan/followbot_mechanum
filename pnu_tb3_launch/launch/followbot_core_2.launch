@@ -1,0 +1,14 @@
+<launch>
+
+  <!-- openCR interface -->
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch"/> 
+
+  <!-- Camera -->
+  <!--include file="$(find realsense2_camera)/launch/rs_camera.launch" >
+    <param name="filters" type="string" value="pointcloud" />
+  </include-->
+
+  <!-- S1 PRLIDAR -->
+  <include file="$(find rplidar_ros)/launch/rplidar_s1.launch"/>
+
+</launch>

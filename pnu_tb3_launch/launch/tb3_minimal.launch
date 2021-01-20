@@ -1,0 +1,29 @@
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="model"/>
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find pnu_tb3_launch)/urdf/turtlebot3_burger.urdf.xacro'" />
+
+  <param name="robot_description" command="$(arg urdf_file)" />
+  <arg name="rviz_file" value="$(find pnu_tb3_launch)/config/tb3_minimal.rviz"/>
+  <!--rviz  -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_file)" required="true"/>
+
+  <include file="$(find ar_track_alvar)/launch/pr2_indiv_no_kinect.launch">
+      <!-- <arg name="depth_mode" value="WFOV_2X2BINNED"/> -->
+      <arg name="marker_size" value="0.08"/>
+      <arg name="max_new_marker_error" value="0.08"/>
+      <arg name="max_track_error" value="0.2"/>
+      <arg name="cam_image_topic" value="/image_raw"/>
+      <arg name="cam_info_topic" value="/camera_info"/>
+      <arg name="output_frame" value="/camera_link"/>
+    </include>
+
+
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster1" args="0 0 0 0 0 0 /base_link /base_footprint 100" />
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster2" args="0 0 0 0 0 0 /base_link /imu_link 100" />
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster3" args="-0.032 0 0.17 0 0 0 /base_link /base_scan 100" />
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster4" args="0 0.07 0.02 0 0 1.57 /base_link /wheel_left_link 100" />
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster5" args="0 -0.07 0.02 0 0 1.57 /base_link /wheel_right_link 100" />
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster6" args="-0.10 0 0 0 0 0 /base_link /caster_back_link 100" />
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster7" args="0.18 0 0.11 0 0 0 /base_link /camera_link 100" />
+</launch>

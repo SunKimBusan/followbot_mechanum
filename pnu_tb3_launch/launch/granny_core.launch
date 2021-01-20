@@ -1,0 +1,18 @@
+<launch>
+
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find pnu_tb3_launch)/urdf/turtlebot_armed_granny.urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+ <!-- openCR interface -->
+ <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch"/>
+
+  <!-- Camera -->
+ <include file="$(find uvc_camera)/launch/camera_node.launch"/>
+
+ <!-- Robot state publisher -->
+ <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!-- camera tf -->
+  <node pkg="tf" type="static_transform_publisher" name="broadcaster1" args="0 0 0 0 0 0 /head_rgbd_sensor_rgb_frame_sync /camera 100" />
+
+</launch>
